@@ -173,7 +173,7 @@ function EquiposPage() {
                     </span>
                   </td>
                   <td className="px-3 py-3 text-gray-600">{eq.ubicacion}</td>
-                  <td className="px-3 py-3 text-gray-500">{eq.fecha_adquisicion || '-'}</td>
+                  <td className="px-3 py-3 text-gray-500">{eq.fecha_adquisicion ? new Date(eq.fecha_adquisicion).toISOString().split('T')[0] : '-'}</td>
                   <td className="px-3 py-3">
                     <div className="flex gap-1.5">
                       <button onClick={() => editEquipo(eq)}

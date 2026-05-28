@@ -2,6 +2,7 @@ services:
   db:
     image: mysql:8.4
     container_name: inventario-db
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: inventario2024
       MYSQL_DATABASE: inventario_computo
@@ -10,6 +11,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./backend/database:/docker-entrypoint-initdb.d
+      - ./backend/database/client.cnf:/etc/mysql/conf.d/client.cnf
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s

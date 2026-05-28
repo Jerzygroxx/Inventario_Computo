@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS inventario_computo
+DROP DATABASE IF EXISTS inventario_computo;
+CREATE DATABASE inventario_computo
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE inventario_computo;
