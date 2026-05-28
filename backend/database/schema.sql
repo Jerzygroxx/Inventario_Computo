@@ -1,0 +1,40 @@
+CREATE DATABASE IF NOT EXISTS inventario_computo
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE inventario_computo;
+
+CREATE TABLE IF NOT EXISTS categorias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  descripcion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS estados (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS ubicaciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  edificio VARCHAR(100),
+  aula VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS equipos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(150) NOT NULL,
+  marca VARCHAR(100),
+  modelo VARCHAR(100),
+  numero_serie VARCHAR(100),
+  fecha_adquisicion DATE,
+  observaciones TEXT,
+  id_categoria INT NOT NULL,
+  id_estado INT NOT NULL,
+  id_ubicacion INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (id_categoria) REFERENCES categorias(id) ON DELETE RESTRICT,
+  FOREIGN KEY (id_estado) REFERENCES estados(id) ON DELETE RESTRICT,
+  FOREIGN KEY (id_ubicacion) REFERENCES ubicaciones(id) ON DELETE RESTRICT
+);

@@ -1,0 +1,44 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: inventario-db
+    environment:
+      MYSQL_ROOT_PASSWORD: inventario2024
+      MYSQL_DATABASE: inventario_computo
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: inventario-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: inventario2024
+      DB_NAME: inventario_computo
+      PORT: 4000
+    ports:
+      - "4000:4000"
+
+  frontend:
+    build: ./frontend
+    container_name: inventario-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  mysql_data:
