@@ -29,6 +29,7 @@ services:
       DB_PASSWORD: inventario2024
       DB_NAME: inventario_computo
       PORT: 4000
+      JWT_SECRET: inventario_prod_secret_2024
     ports:
       - "4000:4000"
 

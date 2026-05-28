@@ -13,6 +13,9 @@ INSERT INTO estados (nombre) VALUES
 ('En mantenimiento'),
 ('Dado de baja');
 
+INSERT INTO usuarios (nombre, email, password_hash, rol) VALUES
+('Admin', 'admin@inventario.com', '$2b$10$pP5wXV.qvwuGxipj5/Eu4eq8DJeJyqDeggzYGBZCgv63Ar79mcXJu', 'admin');
+
 INSERT INTO ubicaciones (nombre, edificio, aula) VALUES
 ('Laboratorio 101', 'Bloque A', '101'),
 ('Laboratorio 102', 'Bloque A', '102'),

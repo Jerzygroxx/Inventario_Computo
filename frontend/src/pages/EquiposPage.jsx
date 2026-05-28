@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { equiposApi, categoriasApi, estadosApi, ubicacionesApi } from '../services/api';
 import EquipoForm from '../components/EquipoForm';
+import { TableSkeleton } from '../components/Skeleton';
+import { toast } from '../services/toast';
 
 function EquiposPage() {
   const [equipos, setEquipos] = useState([]);
@@ -11,15 +13,19 @@ function EquiposPage() {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadAll();
-  }, []);
+  const [search, setSearch] = useState('');
+  const [filtroCategoria, setFiltroCategoria] = useState('');
+  const [filtroEstado, setFiltroEstado] = useState('');
 
-  async function loadAll() {
+  const loadAll = useCallback(async () => {
     setLoading(true);
     try {
       const [eq, cat, est, ubi] = await Promise.all([
-        equiposApi.getAll(),
+        equiposApi.getAll({
+          search: search || undefined,
+          categoria: filtroCategoria || undefined,
+          estado: filtroEstado || undefined
+        }),
         categoriasApi.getAll(),
         estadosApi.getAll(),
         ubicacionesApi.getAll()
@@ -29,19 +35,25 @@ function EquiposPage() {
       setEstados(est);
       setUbicaciones(ubi);
     } catch (err) {
-      alert('Error al cargar datos: ' + err.message);
+      toast.error('Error al cargar datos: ' + err.message);
     } finally {
       setLoading(false);
     }
-  }
+  }, [search, filtroCategoria, filtroEstado]);
+
+  useEffect(() => {
+    const timer = setTimeout(loadAll, 300);
+    return () => clearTimeout(timer);
+  }, [loadAll]);
 
   async function handleCreate(data) {
     try {
       await equiposApi.create(data);
       setShowForm(false);
+      toast.success('Equipo creado correctamente');
       loadAll();
     } catch (err) {
-      alert('Error al crear: ' + err.message);
+      toast.error('Error al crear: ' + err.message);
     }
   }
 
@@ -50,19 +62,21 @@ function EquiposPage() {
       await equiposApi.update(editing.id, data);
       setEditing(null);
       setShowForm(false);
+      toast.success('Equipo actualizado correctamente');
       loadAll();
     } catch (err) {
-      alert('Error al actualizar: ' + err.message);
+      toast.error('Error al actualizar: ' + err.message);
     }
   }
 
-  async function handleDelete(id) {
-    if (!confirm('¿Eliminar este equipo?')) return;
+  async function handleDelete(id, nombre) {
+    if (!window.confirm(`¿Eliminar "${nombre}"? Esta acción no se puede deshacer.`)) return;
     try {
       await equiposApi.remove(id);
+      toast.success('Equipo eliminado');
       loadAll();
     } catch (err) {
-      alert('Error al eliminar: ' + err.message);
+      toast.error('Error al eliminar: ' + err.message);
     }
   }
 
@@ -98,8 +112,33 @@ function EquiposPage() {
         />
       )}
 
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Buscar por nombre, marca, modelo o serie..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 pl-10 pr-3 py-2 text-sm focus:ring-2 focus:ring-slate-900 focus:border-slate-900 outline-none"
+          />
+        </div>
+        <select value={filtroCategoria} onChange={(e) => setFiltroCategoria(e.target.value)}
+          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-white">
+          <option value="">Todas las categorías</option>
+          {categorias.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
+        </select>
+        <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}
+          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:ring-2 focus:ring-slate-900 outline-none bg-white">
+          <option value="">Todos los estados</option>
+          {estados.map(e => <option key={e.id} value={e.id}>{e.nombre}</option>)}
+        </select>
+      </div>
+
       {loading ? (
-        <div className="text-center py-12 text-gray-400 text-sm">Cargando...</div>
+        <TableSkeleton rows={6} cols={8} />
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -141,7 +180,7 @@ function EquiposPage() {
                         className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-2.5 py-1.5 rounded transition-colors">
                         Editar
                       </button>
-                      <button onClick={() => handleDelete(eq.id)}
+                      <button onClick={() => handleDelete(eq.id, eq.nombre)}
                         className="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-medium px-2.5 py-1.5 rounded transition-colors">
                         Eliminar
                       </button>
@@ -149,10 +188,10 @@ function EquiposPage() {
                   </td>
                 </tr>
               ))}
-              {equipos.length === 0 && (
+              {equipos.length === 0 && !loading && (
                 <tr>
                   <td colSpan={9} className="text-center py-12 text-gray-400">
-                    No hay equipos registrados
+                    No se encontraron equipos
                   </td>
                 </tr>
               )}
