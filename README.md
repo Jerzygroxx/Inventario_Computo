@@ -27,7 +27,8 @@ Desarrollado como proyecto final de la **Unidad 3 — Desarrollo Web** en la **U
 
 ## Captura
 
-> *Agrega aquí una captura de pantalla de la aplicación corriendo*
+<img width="1919" height="869" alt="image" src="https://github.com/user-attachments/assets/9b2891eb-a624-4cde-8902-defbeb1c5651" />
+
 
 ## Cómo se construyó
 
