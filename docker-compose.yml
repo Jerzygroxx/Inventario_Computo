@@ -40,6 +40,8 @@ services:
     container_name: inventario-frontend
     depends_on:
       - backend
+    environment:
+      BACKEND_HOST: backend
     ports:
       - "5173:80"
 
