@@ -1,5 +1,3 @@
-USE inventario_computo;
-
 INSERT INTO categorias (nombre, descripcion) VALUES
 ('Computador de escritorio', 'Equipos de torre con monitor, teclado y mouse'),
 ('Portátil', 'Computadores portátiles tipo laptop'),
