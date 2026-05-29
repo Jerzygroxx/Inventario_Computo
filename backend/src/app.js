@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
 const errorHandler = require('./middlewares/errorHandler');
 const { authMiddleware } = require('./middlewares/auth.middleware');
+const initDatabase = require('./initDb');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -25,6 +26,11 @@ app.use('/api/ubicaciones', authMiddleware, ubicacionesRoutes);
 
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+async function start() {
+  await initDatabase();
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+}
+
+start();
