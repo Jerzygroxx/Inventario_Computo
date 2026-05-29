@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 
 const equiposRoutes = require('./routes/equipos.routes');
@@ -23,6 +24,15 @@ app.use('/api/equipos', authMiddleware, equiposRoutes);
 app.use('/api/categorias', authMiddleware, categoriasRoutes);
 app.use('/api/estados', authMiddleware, estadosRoutes);
 app.use('/api/ubicaciones', authMiddleware, ubicacionesRoutes);
+
+const publicPath = path.join(__dirname, '..', 'public');
+app.use(express.static(publicPath));
+
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(publicPath, 'index.html'));
+  }
+});
 
 app.use(errorHandler);
 
