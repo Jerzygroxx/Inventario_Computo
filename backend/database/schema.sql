@@ -1,26 +1,22 @@
-DROP DATABASE IF EXISTS inventario_computo;
-CREATE DATABASE inventario_computo
-  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-USE inventario_computo;
+SET NAMES utf8mb4;
 
 CREATE TABLE IF NOT EXISTS categorias (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   descripcion TEXT
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS estados (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS ubicaciones (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   edificio VARCHAR(100),
   aula VARCHAR(50)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,7 +25,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   password_hash VARCHAR(255) NOT NULL,
   rol ENUM('admin', 'usuario') DEFAULT 'usuario',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS equipos (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -47,4 +43,4 @@ CREATE TABLE IF NOT EXISTS equipos (
   FOREIGN KEY (id_categoria) REFERENCES categorias(id) ON DELETE RESTRICT,
   FOREIGN KEY (id_estado) REFERENCES estados(id) ON DELETE RESTRICT,
   FOREIGN KEY (id_ubicacion) REFERENCES ubicaciones(id) ON DELETE RESTRICT
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
